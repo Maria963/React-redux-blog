@@ -1,25 +1,35 @@
-import React, { Component } from "react";
+import React, { Component, PropTypes } from "react";
 import { Link } from "react-router-dom";
 import Api from "../../utils/api";
+import { connect } from "react-redux";
+// import loadCompanies from "../../actions/listCompanies";
+// import { fetchArticleDetails } from "../actions/index";
+import store from "../../store/configureStore";
+import { getAllCompanies } from "../../store/actions/companies";
 
 class CompaniesList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      companies: [],
+      //    companies: [],
       success: ""
     };
   }
 
   async componentDidMount() {
-    try {
+    /* const { initData } = this.props;
+    console.log(initData());*/
+    //  initData();
+    // const store = configureStore();
+    // console.log(store.dispatch(loadCompanies()));
+    /* try {
       let response = await Api.getCompanies();
       if (response.status === 200) {
         this.setState({ companies: response.data });
       }
     } catch (error) {
       console.error(error);
-    }
+    }*/
   }
 
   removeCompany = id => {
@@ -42,7 +52,8 @@ class CompaniesList extends Component {
   }
 
   companyList = () => {
-    return this.state.companies.map((currentcompany, i) => {
+    console.log(this.props);
+    return this.props.companies.map((currentcompany, i) => {
       return (
         <tr key={i}>
           <td>{currentcompany.name}</td>
@@ -87,6 +98,7 @@ class CompaniesList extends Component {
         <div className="valid-feedback" style={{ display: "block" }}>
           {success}
         </div>
+        {console.log(this.props.companies)}
         <table className="table table-striped" style={{ marginTop: 20 }}>
           <thead>
             <tr>
@@ -104,4 +116,19 @@ class CompaniesList extends Component {
   }
 }
 
-export default CompaniesList;
+const mapStateToProps = state => {
+  return {
+    companies: state.companies.data
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getCompanies: dispatch(getAllCompanies())
+    /*  onDelete: id => {
+      dispatch(deletePost(id));
+    } */
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CompaniesList);

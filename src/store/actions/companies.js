@@ -1,12 +1,33 @@
-import {
-  GET_COMPANIES,
-  DELETE_COMPANY,
-  UPDATE_COMPANY,
-  CREATE_COMPANY
-} from "../types/companies";
+import { get, create, err } from "./companiesTypeFunctions";
 import api from "../../utils/api";
 
-const apiUrl = "http://127.0.0.1:8000/api/companies";
+export const getAllCompanies = () => {
+  return async dispatch => {
+    try {
+      let response = await api.getCompanies();
+      return dispatch(get(response.data));
+    } catch (error) {
+      throw error;
+    }
+  };
+};
+
+export const createCompany = data => {
+  console.log("u");
+  return async dispatch => {
+    console.log("lll");
+    try {
+      console.log("nnn");
+      let response = await api.createCompanies(data);
+      console.log(response);
+      return dispatch(create(response));
+    } catch (error) {
+      console.log("dddd", error.response.data.errors.name);
+      return dispatch(err(error.response.data.errors.name[0]));
+      // throw error;
+    }
+  };
+};
 
 /*
 export const createPost = ({ title, body }) => {
@@ -57,43 +78,3 @@ export const deletePost = id => {
 
 
 */
-
-const get = data => {
-  return {
-    type: GET_COMPANIES,
-    payload: data
-  };
-};
-
-const create = data => {
-  return {
-    type: CREATE_COMPANIES,
-    payload: data
-  };
-};
-
-export const getAllCompanies = () => {
-  return dispatch => {
-    return api
-      .getCompanies()
-      .then(response => {
-        dispatch(get(response.data));
-      })
-      .catch(error => {
-        throw error;
-      });
-  };
-};
-
-export const createCompany = data => {
-  return dispatch => {
-    return api
-      .createCompanies(data)
-      .then(response => {
-        dispatch(create(response));
-      })
-      .catch(error => {
-        throw error;
-      });
-  };
-};

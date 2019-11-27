@@ -2,10 +2,10 @@ import React, { Component, PropTypes } from "react";
 import { Link } from "react-router-dom";
 import Api from "../../utils/api";
 import { connect } from "react-redux";
-// import loadCompanies from "../../actions/listCompanies";
-// import { fetchArticleDetails } from "../actions/index";
-import store from "../../store/configureStore";
-import { getAllCompanies } from "../../store/actions/companies";
+import {
+  mapStateToProps,
+  mapDispatchToProps
+} from "../../store/containers/companies";
 
 class CompaniesList extends Component {
   constructor(props) {
@@ -52,7 +52,6 @@ class CompaniesList extends Component {
   }
 
   companyList = () => {
-    console.log(this.props);
     return this.props.companies.map((currentcompany, i) => {
       return (
         <tr key={i}>
@@ -98,7 +97,6 @@ class CompaniesList extends Component {
         <div className="valid-feedback" style={{ display: "block" }}>
           {success}
         </div>
-        {console.log(this.props.companies)}
         <table className="table table-striped" style={{ marginTop: 20 }}>
           <thead>
             <tr>
@@ -115,20 +113,5 @@ class CompaniesList extends Component {
     );
   }
 }
-
-const mapStateToProps = state => {
-  return {
-    companies: state.companies.data
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    getCompanies: dispatch(getAllCompanies())
-    /*  onDelete: id => {
-      dispatch(deletePost(id));
-    } */
-  };
-};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CompaniesList);

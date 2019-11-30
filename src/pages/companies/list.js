@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import {
   mapStateToProps,
   mapDispatchToProps
-} from "../../store/containers/companies";
+} from "../../store/containers/list";
 
 class CompaniesList extends Component {
   constructor(props) {
@@ -16,7 +16,7 @@ class CompaniesList extends Component {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     /* const { initData } = this.props;
     console.log(initData());*/
     //  initData();
@@ -33,7 +33,7 @@ class CompaniesList extends Component {
   }
 
   removeCompany = id => {
-    const removeFav = this.state.companies.filter(company => company.id !== id);
+    const removeFav = this.props.companies.filter(company => company.id !== id);
     this.setState({
       companies: removeFav
     });
@@ -42,12 +42,13 @@ class CompaniesList extends Component {
   async deleteCompany(id) {
     this.removeCompany(id);
     try {
-      let res = await Api.delCompany(id);
-      if (res.status === 204) {
+      await this.props.delCompany(id);
+      console.log(this.props);
+      /* if (res.status === 204) {
         this.setState({
           success: "Company deleted"
         });
-      }
+      }*/
     } catch (error) {}
   }
 
@@ -94,6 +95,28 @@ class CompaniesList extends Component {
             </Link>
           </div>
         </div>
+        {this.props.success === 201 ? (
+          <div className="valid-feedback" style={{ display: "block" }}>
+            Company Created
+          </div>
+        ) : (
+          ""
+        )}
+        {console.log(this.props.response)}
+        {this.props.update !== undefined ? (
+          <div className="valid-feedback" style={{ display: "block" }}>
+            Company Updated
+          </div>
+        ) : (
+          ""
+        )}
+        {this.props.del !== undefined ? (
+          <div className="valid-feedback" style={{ display: "block" }}>
+            Company deleted
+          </div>
+        ) : (
+          ""
+        )}
         <div className="valid-feedback" style={{ display: "block" }}>
           {success}
         </div>

@@ -1,11 +1,13 @@
 import React, { Component } from "react";
-import Api from "../../utils/api";
 import Input from "../../components/basic/input-button";
 import Submit from "../../components/basic/submit-button";
 import Errors from "../../components/basic/errors";
 import Success from "../../components/basic/success";
 import { connect } from "react-redux";
-import { createCompany } from "../../store/actions/companies";
+import {
+  mapStateToProps,
+  mapDispatchToProps
+} from "../../store/containers/create";
 
 class CreateCompanies extends Component {
   constructor(props) {
@@ -60,8 +62,16 @@ class CreateCompanies extends Component {
     newCompanies.append("email", email);
     newCompanies.append("logo", logo);
     newCompanies.append("website", website);
-    console.log("ddd");
-    this.props.createCompanies(newCompanies);
+
+    await this.props.createCompanies(newCompanies);
+    console.log(this.props);
+    if (this.props.success === 201) {
+      this.props.history.push("/companies");
+    } else {
+      this.setState({
+        nameerror: this.props.errors
+      });
+    }
 
     /*
     try {
@@ -90,7 +100,7 @@ class CreateCompanies extends Component {
       <div style={{ marginTop: 10 }}>
         <h3>Create New Company</h3>
         <form encType="multipart/form-data" onSubmit={this.onSubmit}>
-          <Errors name="ddd" />
+          <Errors name={nameerror} />
           <Input
             name="Name:"
             type="text"
@@ -117,25 +127,10 @@ class CreateCompanies extends Component {
           />
           <Submit value="Create Company" />
           <Success name={success} />
-          {console.log(this.props.errors)}
         </form>
       </div>
     );
   }
 }
-
-export const mapStateToProps = state => {
-  return {
-    errors: state.companies
-  };
-};
-
-export const mapDispatchToProps = dispatch => {
-  return {
-    createCompanies: posts => {
-      dispatch(createCompany(posts));
-    }
-  };
-};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateCompanies);

@@ -1,9 +1,14 @@
 import React, { Component } from "react";
 import Api from "../../utils/api";
+import { connect } from "react-redux";
 import Input from "../../components/basic/input-button";
 import Submit from "../../components/basic/submit-button";
 import Errors from "../../components/basic/errors";
 import Success from "../../components/basic/success";
+import {
+  mapStateToProps,
+  mapDispatchToProps
+} from "../../store/containers/edit";
 
 class EditCompanies extends Component {
   constructor(props) {
@@ -23,17 +28,31 @@ class EditCompanies extends Component {
 
   async componentDidMount() {
     let company_id = this.props.match.params.id;
+
     try {
-      let response = await Api.getCompany(company_id);
-      if (response.status === 200) {
+      // let response = await Api.getCompany(company_id);
+      await this.props.getCompany(company_id);
+      console.log();
+      if (this.props.company.status === 200) {
         this.setState({
-          name: response.data.name == null ? "" : response.data.name,
-          email: response.data.email == null ? "" : response.data.email,
-          logoname:
-            response.data.logo == null
+          name:
+            this.props.company.data.name == null
               ? ""
-              : Api.SERVER_URL + "/storage/logos/" + response.data.logo,
-          website: response.data.website == null ? "" : response.data.website
+              : this.props.company.data.name,
+          email:
+            this.props.company.data.email == null
+              ? ""
+              : this.props.company.data.email,
+          logoname:
+            this.props.company.data.logo == null
+              ? ""
+              : Api.SERVER_URL +
+                "/storage/logos/" +
+                this.props.company.data.logo,
+          website:
+            this.props.company.data.website == null
+              ? ""
+              : this.props.company.data.website
         });
       }
     } catch (error) {}
@@ -74,22 +93,18 @@ class EditCompanies extends Component {
     const { name, email, logo, website } = this.state;
     let company_id = this.props.match.params.id;
     const updateCompanies = new FormData();
+    console.log(updateCompanies);
     updateCompanies.append("name", name);
     updateCompanies.append("email", email);
     updateCompanies.append("logo", logo);
     updateCompanies.append("website", website);
-
-    try {
-      let response = await Api.editCompanies(company_id, updateCompanies);
-      if (response.status === 200) {
-        this.setState({
-          success: response.data
-        });
-      }
-    } catch (error) {
+    await this.props.editCompany(company_id, updateCompanies);
+    if (this.props.update.status !== 200) {
       this.setState({
-        nameerror: error.response.data.errors.name
+        nameerror: this.props.error
       });
+    } else {
+      this.props.history.push("/companies");
     }
   };
 
@@ -132,4 +147,4 @@ class EditCompanies extends Component {
   }
 }
 
-export default EditCompanies;
+export default connect(mapStateToProps, mapDispatchToProps)(EditCompanies);

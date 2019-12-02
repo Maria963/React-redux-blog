@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import {
   mapStateToProps,
   mapDispatchToProps
-} from "../../store/containers/create";
+} from "../../store/containers/companies/create";
 
 class CreateCompanies extends Component {
   constructor(props) {
@@ -64,7 +64,6 @@ class CreateCompanies extends Component {
     newCompanies.append("website", website);
 
     await this.props.createCompanies(newCompanies);
-    console.log(this.props);
     if (this.props.success === 201) {
       this.props.history.push("/companies");
     } else {
@@ -72,26 +71,6 @@ class CreateCompanies extends Component {
         nameerror: this.props.errors
       });
     }
-
-    /*
-    try {
-      let response = await Api.createCompanies(newCompanies);
-      if (response.status === 201) {
-        this.setState({
-          success: "Company added",
-          name: "",
-          email: "",
-          logo: "",
-          website: "",
-          inputKey: Date.now()
-        });
-      }
-    } catch (error) {
-      this.setState({
-        errors: error.response.data.message,
-        nameerror: error.response.data.errors.name
-      });
-    }*/
   };
 
   render() {

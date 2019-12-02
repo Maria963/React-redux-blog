@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import Api from "../../utils/api";
+import { connect } from "react-redux";
+import {
+  mapStateToProps,
+  mapDispatchToProps
+} from "../../store/containers/employees/list";
 
 class EmployeesList extends Component {
   constructor(props) {
@@ -37,25 +42,18 @@ class EmployeesList extends Component {
   };
 
   deleteEmployee = async id => {
-    this.removeEmployee(id);
-    try {
-      let response = await Api.delEmployee(id);
-      if (response.status === 204) {
-        this.setState({
-          success: "Employee deleted"
-        });
-      } else {
-        this.setState({
-          error: response.data.error
-        });
-      }
-    } catch (error) {
-      console.error(error);
+    if (!window.confirm("Are you sure?")) {
+      return false;
+    } else {
+      this.removeEmployee(id);
+      try {
+        await this.props.delEmployee(id);
+      } catch (error) {}
     }
   };
 
   employeesList() {
-    return this.state.employees.map((currentemployee, i) => {
+    return this.props.employees.map((currentemployee, i) => {
       return (
         <tr key={i}>
           <td>{currentemployee.first_name}</td>
@@ -88,6 +86,22 @@ class EmployeesList extends Component {
             </Link>
           </div>
         </div>
+        {this.props.success === 201 ? (
+          <div className="valid-feedback" style={{ display: "block" }}>
+            Employee Created
+          </div>
+        ) : (
+          ""
+        )}
+
+        {this.props.success === 200 ? (
+          <div className="valid-feedback" style={{ display: "block" }}>
+            Employee Updated
+          </div>
+        ) : (
+          ""
+        )}
+
         <div className="valid-feedback" style={{ display: "block" }}>
           {success}
         </div>
@@ -109,4 +123,4 @@ class EmployeesList extends Component {
   }
 }
 
-export default EmployeesList;
+export default connect(mapStateToProps, mapDispatchToProps)(EmployeesList);

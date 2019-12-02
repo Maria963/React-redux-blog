@@ -5,6 +5,11 @@ import Submit from "../../components/basic/submit-button";
 import Select from "../../components/basic/select";
 import Errors from "../../components/basic/errors";
 import Success from "../../components/basic/success";
+import { connect } from "react-redux";
+import {
+  mapStateToProps,
+  mapDispatchToProps
+} from "../../store/containers/employees/create";
 
 class CreateEmployee extends Component {
   constructor(props) {
@@ -80,22 +85,14 @@ class CreateEmployee extends Component {
       phone
     };
 
-    try {
-      let response = await Api.createEmployees(newEmployee);
-      if (response.status === 201) {
-        this.setState({
-          success: "Employee added",
-          first_name: "",
-          last_name: "",
-          company_id: "",
-          email: "",
-          phone: ""
-        });
-      }
-    } catch (error) {
+    await this.props.createEmployees(newEmployee);
+
+    if (this.props.success === 201) {
+      this.props.history.push("/employees");
+    } else {
       this.setState({
-        nameerror: error.response.data.errors.first_name,
-        lastnameerror: error.response.data.errors.last_name
+        nameerror: this.props.errors.first_name,
+        lastnameerror: this.props.errors.last_name
       });
     }
   };
@@ -166,4 +163,4 @@ class CreateEmployee extends Component {
   }
 }
 
-export default CreateEmployee;
+export default connect(mapStateToProps, mapDispatchToProps)(CreateEmployee);

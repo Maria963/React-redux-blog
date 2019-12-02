@@ -1,0 +1,8 @@
+.menu {
+  color: black;
+  padding: 10px;
+}
+
+.is-active {
+  color: red;
+}

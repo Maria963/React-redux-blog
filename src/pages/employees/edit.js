@@ -1,10 +1,14 @@
 import React, { Component } from "react";
-import Api from "../../utils/api";
 import Input from "../../components/basic/input-button";
 import Submit from "../../components/basic/submit-button";
 import Select from "../../components/basic/select";
 import Errors from "../../components/basic/errors";
 import Success from "../../components/basic/success";
+import { connect } from "react-redux";
+import {
+  mapStateToProps,
+  mapDispatchToProps
+} from "../../store/containers/employees/edit";
 
 class UpdateEmployee extends Component {
   constructor(props) {
@@ -27,26 +31,32 @@ class UpdateEmployee extends Component {
   async componentDidMount() {
     let employee_id = this.props.match.params.id;
     try {
-      let response = await Api.getCompanies();
-      let employee = await Api.getEmployee(employee_id);
-      if (response.status === 200) {
-        this.setState({ companies: response.data });
-      }
-      if (employee.status === 200) {
+      await this.props.getEmployee(employee_id);
+      if (this.props.employee.status === 200) {
         this.setState({
           first_name:
-            employee.data.first_name == null ? "" : employee.data.first_name,
+            this.props.employee.data.first_name == null
+              ? ""
+              : this.props.employee.data.first_name,
           last_name:
-            employee.data.last_name == null ? "" : employee.data.last_name,
+            this.props.employee.data.last_name == null
+              ? ""
+              : this.props.employee.data.last_name,
           company_id:
-            employee.data.company_id == null ? "" : employee.data.company_id,
-          email: employee.data.email == null ? "" : employee.data.email,
-          phone: employee.data.phone == null ? "" : employee.data.phone
+            this.props.employee.data.company_id == null
+              ? ""
+              : this.props.employee.data.company_id,
+          email:
+            this.props.employee.data.email == null
+              ? ""
+              : this.props.employee.data.email,
+          phone:
+            this.props.employee.data.phone == null
+              ? ""
+              : this.props.employee.data.phone
         });
       }
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
   }
 
   onChangeEmployeeFirstname = e => {
@@ -99,25 +109,20 @@ class UpdateEmployee extends Component {
     };
 
     let employee_id = this.props.match.params.id;
-
-    try {
-      let response = await Api.editEmployee(employee_id, updateEmployee);
-      if (response.status === 200) {
-        this.setState({
-          success: response.data
-        });
-      }
-    } catch (error) {
+    await this.props.editEmployee(employee_id, updateEmployee);
+    if (this.props.success === 200) {
+      this.props.history.push("/employees");
+    } else {
       this.setState({
-        nameerror: error.response.data.errors.first_name,
-        lastnameerror: error.response.data.errors.last_name
+        nameerror: this.props.errors.first_name,
+        lastnameerror: this.props.errors.last_name
       });
     }
   };
 
   companiesList = () => {
-    const { companies, company_id } = this.state;
-
+    const { company_id } = this.state;
+    const { companies } = this.props;
     return companies.map(company => {
       return (
         <option
@@ -186,4 +191,4 @@ class UpdateEmployee extends Component {
   }
 }
 
-export default UpdateEmployee;
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateEmployee);

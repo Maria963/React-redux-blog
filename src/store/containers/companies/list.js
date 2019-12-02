@@ -3,14 +3,13 @@ import {
   createCompany,
   editCompany,
   delCompany
-} from "../actions/companies";
+} from "../../actions/companies";
 
 export const mapStateToProps = state => {
   return {
     companies: state.companies.data,
     success: state.companies.success,
-    update: state.companies.update,
-    del: state.companies.del
+    errors: state.employees.errors
   };
 };
 

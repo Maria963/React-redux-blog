@@ -1,11 +1,11 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import Api from "../../utils/api";
 import { connect } from "react-redux";
 import {
   mapStateToProps,
   mapDispatchToProps
-} from "../../store/containers/list";
+} from "../../store/containers/companies/list";
 
 class CompaniesList extends Component {
   constructor(props) {
@@ -16,22 +16,6 @@ class CompaniesList extends Component {
     };
   }
 
-  componentDidMount() {
-    /* const { initData } = this.props;
-    console.log(initData());*/
-    //  initData();
-    // const store = configureStore();
-    // console.log(store.dispatch(loadCompanies()));
-    /* try {
-      let response = await Api.getCompanies();
-      if (response.status === 200) {
-        this.setState({ companies: response.data });
-      }
-    } catch (error) {
-      console.error(error);
-    }*/
-  }
-
   removeCompany = id => {
     const removeFav = this.props.companies.filter(company => company.id !== id);
     this.setState({
@@ -40,16 +24,14 @@ class CompaniesList extends Component {
   };
 
   async deleteCompany(id) {
-    this.removeCompany(id);
-    try {
-      await this.props.delCompany(id);
-      console.log(this.props);
-      /* if (res.status === 204) {
-        this.setState({
-          success: "Company deleted"
-        });
-      }*/
-    } catch (error) {}
+    if (!window.confirm("Are you sure?")) {
+      return false;
+    } else {
+      this.removeCompany(id);
+      try {
+        await this.props.delCompany(id);
+      } catch (error) {}
+    }
   }
 
   companyList = () => {
@@ -102,17 +84,9 @@ class CompaniesList extends Component {
         ) : (
           ""
         )}
-        {console.log(this.props.response)}
-        {this.props.update !== undefined ? (
+        {this.props.success === 200 ? (
           <div className="valid-feedback" style={{ display: "block" }}>
             Company Updated
-          </div>
-        ) : (
-          ""
-        )}
-        {this.props.del !== undefined ? (
-          <div className="valid-feedback" style={{ display: "block" }}>
-            Company deleted
           </div>
         ) : (
           ""

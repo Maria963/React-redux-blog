@@ -4,7 +4,7 @@ const Input = props => {
   return (
     <div className="form-group">
       <label>{props.name}</label>
-      {props.name == "Logo:" && props.logoname !== "" ? (
+      {props.name === "Logo:" && props.logoname !== "" ? (
         <img style={{ width: "50px" }} src={props.logoname} alt="img" />
       ) : (
         ""

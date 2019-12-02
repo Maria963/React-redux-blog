@@ -3,9 +3,9 @@ import {
   DELETE_COMPANY,
   UPDATE_COMPANY,
   CREATE_COMPANY,
-  GET_COMPANY,
-  FAILED
+  GET_COMPANY
 } from "../types/companies";
+import { DELETE_COMPANY_EMPLOYEES } from "../types/employees";
 
 export const get = data => {
   return {
@@ -28,6 +28,13 @@ export const create = data => {
   };
 };
 
+export const errCreate = error => {
+  return {
+    type: CREATE_COMPANY,
+    payload: error
+  };
+};
+
 export const edit = success => {
   return {
     type: UPDATE_COMPANY,
@@ -42,9 +49,16 @@ export const err = error => {
   };
 };
 
-export const del = (data, id) => {
+export const delCompanies = id => {
   return {
     type: DELETE_COMPANY,
-    payload: { data, id }
+    payload: id
+  };
+};
+
+export const delCompanyEmployee = id => {
+  return {
+    type: DELETE_COMPANY_EMPLOYEES,
+    payload: id
   };
 };

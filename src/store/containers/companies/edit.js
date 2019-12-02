@@ -1,11 +1,11 @@
-import { getCompany } from "../actions/companies";
-import { editCompany } from "../actions/companies";
+import { getCompany } from "../../actions/companies";
+import { editCompany } from "../../actions/companies";
 
 export const mapStateToProps = state => {
   return {
     company: state.companies.companyData,
-    update: state.companies.update,
-    error: state.companies.response
+    success: state.companies.success,
+    errors: state.companies.errors
   };
 };
 

@@ -8,7 +8,7 @@ import Success from "../../components/basic/success";
 import {
   mapStateToProps,
   mapDispatchToProps
-} from "../../store/containers/edit";
+} from "../../store/containers/companies/edit";
 
 class EditCompanies extends Component {
   constructor(props) {
@@ -30,9 +30,8 @@ class EditCompanies extends Component {
     let company_id = this.props.match.params.id;
 
     try {
-      // let response = await Api.getCompany(company_id);
       await this.props.getCompany(company_id);
-      console.log();
+
       if (this.props.company.status === 200) {
         this.setState({
           name:
@@ -93,15 +92,16 @@ class EditCompanies extends Component {
     const { name, email, logo, website } = this.state;
     let company_id = this.props.match.params.id;
     const updateCompanies = new FormData();
-    console.log(updateCompanies);
+
     updateCompanies.append("name", name);
     updateCompanies.append("email", email);
     updateCompanies.append("logo", logo);
     updateCompanies.append("website", website);
     await this.props.editCompany(company_id, updateCompanies);
-    if (this.props.update.status !== 200) {
+
+    if (this.props.success !== 200) {
       this.setState({
-        nameerror: this.props.error
+        nameerror: this.props.errors
       });
     } else {
       this.props.history.push("/companies");

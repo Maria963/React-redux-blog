@@ -1,10 +1,9 @@
-import { createCompany } from "../actions/companies";
+import { createCompany } from "../../actions/companies";
 
 export const mapStateToProps = state => {
   return {
-    errors: state.companies.error,
-    success: state.companies.success,
-    response: state.companies.response
+    errors: state.companies.errors,
+    success: state.companies.success
   };
 };
 
